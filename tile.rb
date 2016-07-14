@@ -16,7 +16,7 @@ class Tile
     @revealed = true
     neighbor_bomb_count(pos)
     if @bombed
-      put "You got bombed"
+      puts "You got bombed"
       exit
     end
   end
@@ -29,13 +29,14 @@ class Tile
     @bombed = true
   end
 
+  def grid
+    @board.grid
+  end
   def neighbors(pos)
     neighbor_tiles = []
     x, y = pos
-    if x == @board.grid.length - 1
-      x -=
-    (x-1..x+1).each do |i|
-      (y-1..y+1).each do |j|
+    find_range(x).each do |i|
+      find_range(y).each do |j|
         next if [i, j] == pos
         neighbor_tiles << @board[[i,j]]
       end
@@ -43,16 +44,16 @@ class Tile
     neighbor_tiles
   end
 
-  # def explore_neighbors(x,y)
-  #   neighbor_tiles = []
-  #   (x-1..x+1).each do |i|
-  #     (y-1..y+1).each do |j|
-  #       next if [i, j] == pos
-  #       neighbor_tiles << @board[[i,j]]
-  #     end
-  #   end
-  #   neighbor_tiles
-  # end
+
+  def find_range(x)
+      if x == 0
+        (x..x+1)
+      elsif grid.length - 1
+        (x-1..x)
+      else
+        (x-1..x+1)
+      end
+  end
 
 
   def neighbor_bomb_count(pos)

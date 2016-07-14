@@ -19,18 +19,19 @@ class Board
 
   def lay_bombs(bomb_num)
     bombs_layed = 0
-    while bombs_layed < bomb_num
+    # while bombs_layed < bomb_num
       pos = get_bomb_pos
-      until !self[pos].bombed
-        pos = get_bomb_pos
-      end
+      # until !self[pos].bombed
+      #   pos = get_bomb_pos
+      # end
       self[pos].bombed = true
       bombs_layed += 1
-    end
+    # end
   end
 
   def get_bomb_pos
-    [rand(@grid.length), rand(@grid.length)]
+    # [rand(@grid.length), rand(@grid.length)]
+    [0,8]
   end
 
   def won?
