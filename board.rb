@@ -5,6 +5,7 @@ class Board
 
   def initialize
     @grid = Array.new(9){Array.new(9){Tile.new(self)}}
+    set_positions
   end
 
   def [](pos)
@@ -19,19 +20,19 @@ class Board
 
   def lay_bombs(bomb_num)
     bombs_layed = 0
-    # while bombs_layed < bomb_num
+    while bombs_layed < bomb_num
       pos = get_bomb_pos
-      # until !self[pos].bombed
-      #   pos = get_bomb_pos
-      # end
+      until !self[pos].bombed
+        pos = get_bomb_pos
+      end
+      p pos
       self[pos].bombed = true
       bombs_layed += 1
-    # end
+    end
   end
 
   def get_bomb_pos
-    # [rand(@grid.length), rand(@grid.length)]
-    [0,8]
+    [rand(@grid.length), rand(@grid.length)]
   end
 
   def won?
@@ -53,5 +54,18 @@ class Board
       puts this_row.join(" ")
     end
   end
+
+  def set_positions
+    @grid.each_with_index do |row, row_idx|
+      row.each_with_index do |col, col_idx|
+        col.position = [row_idx, col_idx]
+        col.value = col.neighbor_bomb_count([row_idx, col_idx])
+        p col.value
+      end
+    end
+  end
+
+
+
 
 end

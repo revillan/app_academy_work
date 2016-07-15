@@ -1,7 +1,8 @@
 require_relative 'board'
+require 'byebug'
 
 class Tile
-  attr_accessor :bombed, :flagged, :revealed
+  attr_accessor :bombed, :flagged, :revealed, :position, :value
 
   def initialize(board)
     @bombed = false
@@ -9,12 +10,14 @@ class Tile
     @revealed = false
     @value = 0
     @board = board
+    @position = []
 
   end
 
   def reveal(pos)
     @revealed = true
     neighbor_bomb_count(pos)
+    cluster(pos) if @value == 0
     if @bombed
       puts "You got bombed"
       exit
@@ -32,6 +35,30 @@ class Tile
   def grid
     @board.grid
   end
+
+  def cluster(pos)
+    # debugger
+    return if neighbors(pos).any? { |tile| tile.bombed}
+    if neighbors(pos).none? { |tile| tile.bombed}
+      not_revealed = neighbors(pos).reject{ |tile| tile.revealed}
+      not_revealed.each do |tile|
+        tile.reveal(pos)
+        cluster(tile.position)
+      end
+    end
+  end
+    # # queue = [pos]
+    # current = 0
+    # until current == queue.length
+    #   neighbors(queue[current]).each do |neighbor|
+    #     queue << neighbor unless queue.include?(neighbor)
+    #   end
+    #   adjacent = @board[queue[current]]
+    #   adjacent.reveal(queue[current]) unless adjacent.bombed
+    #   current += 1
+    #   cluster(queue[current, queue])
+    # end
+
   def neighbors(pos)
     neighbor_tiles = []
     x, y = pos
@@ -62,8 +89,7 @@ class Tile
     neighbor_tiles.each do |tile|
       count += 1 if tile.bombed
     end
-    @value = count
-    @value
+    count
   end
 
   def to_s
